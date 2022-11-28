@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script>
+        window.onload = () => {
+            loadCurrencyCodeList();
+            loadStatistics();
+        }
+
+        function loadCurrencyCodeList() {
+            $.get("/api/currencyCodes", (response) => {
+                if (response.currencyCodes === undefined || !Array.isArray(response.currencyCodes)) {
+                    alert("We're sorry, our server didn't feel good while providing the list of currency codes).");
+                    return;
+                };
+                $('#sourceCurrency').html('');
+                $('#destinationCurrency').html('');
+                response.currencyCodes.forEach((element) => {
+                    $('#sourceCurrency').append(`<option>${element}</option>`);
+                    $('#destinationCurrency').append(`<option>${element}</option>`);
+                })
+            }).fail(function () {
+                alert("We're sorry, communication with our server failed (currency codes).");
+            });
+        }
+
+        function loadStatistics() {
+            $.get("/api/statistics", (response) => {
+                renderStatistics(response)
+            }).fail(function () {
+                alert("We're sorry, communication with our server failed (statistics).");
+            });
+        }
+
+        function renderStatistics(data) {
+            if (data.mostPopularCurrencies !== undefined) {
+                $('#mostPopularCurrency').html(data.mostPopularCurrencies);
+            }
+            if (data.totalAmountConverted !== undefined) {
+                $('#totalAmountConverted').html(data.totalAmountConverted);
+            }
+            if (data.numberOfRequestsMade !== undefined) {
+                $('#numberOfConversionRequests').html(data.numberOfRequestsMade);
+            }
+        }
+
+        function convert() {
+            const amount = parseFloat($('#sourceAmount').val());
+            const srcCurrency = $('#sourceCurrency').val();
+            const destCurrency = $('#destinationCurrency').val();
+            if (srcCurrency === destCurrency) {
+                alert("We are sorry, source and destination currency can't be equal.");
+                return;
+            }
+            $.post("/api/convert", {
+                amount: amount,
+                sourceCurrency: srcCurrency,
+                destinationCurrency: destCurrency
+            }, (response) => {
+                console.log(response)
+                $('#results').append("<div>" + amount + " " + $('#sourceCurrency').val() + " is " + response.destinationAmount + " " + $('#destinationCurrency').val() + "</div>");
+                renderStatistics(response.statistics);
+            }).fail(function () {
+                alert("We're sorry, communication with our server failed (convert).");
+            });
+        }
+    </script>
+</head>
+
+<body>
+    <h1>Currency convertor</h1>
+
+    <input id="sourceAmount" type="number" valueAsNumber value="0">
+    <select id="sourceCurrency">
+        <option>loading...</option>
+    </select>
+    to
+    <select id="destinationCurrency">
+        <option>loading...</option>
+    </select>
+    <button onclick="convert()">Convert!</button>
+
+    <div id="results">
+        <h2>Results:</h2>
+    </div>
+
+    <div id="statistics">
+        <h2>Statistics:</h2>
+        Most popular destination currency: <span id="mostPopularCurrency">loading...</span><br>
+        Total amount converted: <span id="totalAmountConverted">loading...</span> USD<br>
+        Total number of conversion requests made: <span id="numberOfConversionRequests">loading...</span><br>
+    </div>
+</body>
+
+</html>
