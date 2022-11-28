@@ -59,7 +59,6 @@
                 sourceCurrency: srcCurrency,
                 destinationCurrency: destCurrency
             }, (response) => {
-                console.log(response)
                 $('#results').append("<div>" + amount + " " + $('#sourceCurrency').val() + " is " + response.destinationAmount + " " + $('#destinationCurrency').val() + "</div>");
                 renderStatistics(response.statistics);
             }).fail(function () {
