@@ -9,7 +9,7 @@ calculator.initialise(CONFIG.backend.openexchangeratesAppId);
 
 app.get("/", (req, res) => {
     console.log("serving", req.route.path);
-    res.sendFile(path.join(__dirname, '../client/index.html'));
+    res.sendFile(path.join(__dirname, '../client-jQuery/index.html'));
 });
 
 var currencies = [];
