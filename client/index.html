@@ -12,6 +12,7 @@
         function loadCurrencyCodeList() {
             $.get("/api/currencyCodes", (response) => {
                 if (response.currencyCodes === undefined || !Array.isArray(response.currencyCodes)) {
+                    console.log("loadCurrencyCodeList response", response);
                     alert("We're sorry, our server didn't feel good while providing the list of currency codes).");
                     return;
                 };
