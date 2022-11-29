@@ -13,11 +13,11 @@ neporovnával.
 náš účel byla jako stvořená, ale není v bezplatné verzi, takže jsem si musel vystačit s obecnou
 /api/latest
 
-* V balíčku jsou dva frontendy: nejdřív jsem v adresáři **client** udělal frontend s použitím jQuery,
+* V balíčku jsou dva frontendy: nejdřív jsem v adresáři **client-jQuery** udělal frontend s použitím jQuery,
 protože s touto knihovnou mám mnohem víc zkušeností než s Reactem, chtěl jsem mít rychle základní
 kostru celé aplikace, a (možná chybně) jsem předpokládal, že bez Reactu to bude rychlejší.
 
-Následně jsem v adresáři **client2** udělal druhý, tentokrát Reactový frontend. Celý tandem dvou
+Následně jsem v adresáři **client-React** udělal druhý, tentokrát Reactový frontend. Celý tandem dvou
 Node.js (backend a reactový frontend) lze spustit jediným příkazem _npm start_ v hlavním adresáři
 projektu. React poslouchá na portu 3000, backend na portu 3001. Původní frontend je stále funkční
 na adrese http://localhost:3001/ Upřímně, nemám s takovým propojením a _proxováním_ dvou Node.JS
