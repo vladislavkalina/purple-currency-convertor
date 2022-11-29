@@ -9,6 +9,7 @@
             loadStatistics();
         }
 
+        //TODO: In case the frontend remain as it is (plain HTLM+jQuery), the following code will go to a separate file, e.g. frontend.js
         function loadCurrencyCodeList() {
             $.get("/api/currencyCodes", (response) => {
                 if (response.currencyCodes === undefined || !Array.isArray(response.currencyCodes)) {
@@ -54,11 +55,7 @@
                 alert("We are sorry, source and destination currency can't be equal.");
                 return;
             }
-            $.post("/api/convert", {
-                amount: amount,
-                sourceCurrency: srcCurrency,
-                destinationCurrency: destCurrency
-            }, (response) => {
+            $.post(`/api/convert?amount=${amount}&src=${srcCurrency}&dst=${destCurrency}`, (response) => {
                 $('#results').append("<div>" + amount + " " + $('#sourceCurrency').val()
                     + " is " + response.destinationAmount + " " + $('#destinationCurrency').val() + "</div>");
                 renderStatistics(response.statistics);
@@ -67,6 +64,13 @@
             });
         }
     </script>
+    <style>
+        /*TODO: In case the frontend remain as it is (plain HTLM+jQuery), the following code will go to a separate file, e.g. frontend.js*/
+        span.statItem {
+            display: inline-block;
+            width: 300px
+        }
+    </style>
 </head>
 
 <body>
@@ -88,9 +92,15 @@
 
     <div id="statistics">
         <h2>Statistics:</h2>
-        Most popular destination currency: <span id="mostPopularCurrency">[loading...]</span><br>
-        Total amount converted: <span id="totalAmountConverted">[loading...]</span> USD<br>
-        Total number of conversion requests made: <span id="numberOfConversionRequests">[loading...]</span><br>
+        <div><span class="statItem">Most popular destination currency:</span>
+            <span id="mostPopularCurrency">[loading...]</span>
+        </div>
+        <div><span class="statItem">Total amount converted:</span>
+            <span id="totalAmountConverted">[loading...]</span> USD
+        </div>
+        <div><span class="statItem">Total number of conversion requests made:</span>
+            <span id="numberOfConversionRequests">[loading...]</span>
+        </div>
     </div>
 </body>
 

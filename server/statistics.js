@@ -4,7 +4,7 @@ let statisticsData = { popularDestCurrencies: {}, numberOfRequest: 0, totalAmoun
 let statisticsReady = false;
 
 exports.updateStatistics = (parameters) => {
-    console.log("updating statistics", parameters);
+    console.log("Updating statistics", parameters);
     if (statisticsData.popularDestCurrencies[parameters.destinationCurrency] === undefined) {
         statisticsData.popularDestCurrencies[parameters.destinationCurrency] = 1
     } else {
@@ -21,7 +21,7 @@ exports.updateStatistics = (parameters) => {
 
 exports.getStatistics = () => {
     if (statisticsReady === false) {
-        console.log("reading from file not finished");
+        console.log("Reading from file not finished");
         return { "errorMessage": "Statistics not ready yet" };
     }
     let mostPopularCurrency = null;
@@ -40,12 +40,12 @@ exports.getStatistics = () => {
 }
 
 function storeValues() {
-    console.log("storing updated statistic values...");
+    console.log("Storing updated statistic values");
     fs.writeFile(STORAGE_FILENAME, JSON.stringify(statisticsData), (err) => {
         if (err) {
             console.error("Error during saving statistics:", err);
         }
-        console.log("statistics stored");
+        console.log("Statistics stored");
     });
 }
 
@@ -53,14 +53,14 @@ function loadValues() {
     console.log("loading values...");
     fs.readFile(STORAGE_FILENAME, (err, data) => {
         if (err) {
-            console.error("Error during reading statistics:", err);
+            console.error("We can't read statistics from the previous run, let's start with zeros.", err);
             statisticsReady = true;
             return;
         }
         try {
             data = JSON.parse(data);
-            console.log("values loaded from storage", data);
-            console.log("values gathered before loading from file, need to be added to those loaded from storage", statisticsData);
+            console.log("Statistic values from the previous run, loaded from file:", data);
+            console.log("Statistic values gathered since start, before values from the previous run were read from file.", statisticsData);
             if (data.numberOfRequest !== undefined && parseFloat(data.numberOfRequest) > 0) statisticsData.numberOfRequest += parseFloat(data.numberOfRequest);
             if (data.totalAmountCoverted !== undefined && parseFloat(data.totalAmountCoverted) > 0) statisticsData.totalAmountCoverted += parseFloat(data.totalAmountCoverted);
             Object.keys(data.popularDestCurrencies).forEach(key => {
@@ -73,7 +73,7 @@ function loadValues() {
         } catch (e) {
             console.log("Error during decoding statistics:", e);
         }
-        console.log("statistics loaded", statisticsData);
+        console.log("Statistics after adding values from the previous run", statisticsData);
         statisticsReady = true;
         storeValues();
 
