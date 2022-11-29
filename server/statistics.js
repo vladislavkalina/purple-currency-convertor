@@ -50,7 +50,6 @@ function storeValues() {
 }
 
 function loadValues() {
-    console.log("loading values...");
     fs.readFile(STORAGE_FILENAME, (err, data) => {
         if (err) {
             console.error("We can't read statistics from the previous run, let's start with zeros.", err);
@@ -59,8 +58,8 @@ function loadValues() {
         }
         try {
             data = JSON.parse(data);
-            console.log("Statistic values from the previous run, loaded from file:", data);
-            console.log("Statistic values gathered since start, before values from the previous run were read from file.", statisticsData);
+            // console.log("Statistic values from the previous run, loaded from file:", data);
+            // console.log("Statistic values gathered since start, before values from the previous run were read from file.", statisticsData);
             if (data.numberOfRequest !== undefined && parseFloat(data.numberOfRequest) > 0) statisticsData.numberOfRequest += parseFloat(data.numberOfRequest);
             if (data.totalAmountCoverted !== undefined && parseFloat(data.totalAmountCoverted) > 0) statisticsData.totalAmountCoverted += parseFloat(data.totalAmountCoverted);
             Object.keys(data.popularDestCurrencies).forEach(key => {
@@ -73,7 +72,7 @@ function loadValues() {
         } catch (e) {
             console.log("Error during decoding statistics:", e);
         }
-        console.log("Statistics after adding values from the previous run", statisticsData);
+        console.log("Statistics after loading values from the previous run", statisticsData);
         statisticsReady = true;
         storeValues();
 

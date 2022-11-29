@@ -5,7 +5,7 @@ const URL_LATEST_EXCHANGE_RATES = "https://openexchangerates.org/api/latest.json
 const URL_USAGE = "https://openexchangerates.org/api/usage.json";
 
 exports.getCurrencyCodeList = async () => {
-    console.log("getting currencies from openexchangerates.org");
+    console.log("Getting currency code list from openexchangerates.org");
     let currenciesReponse = await fetch(URL_CURRENCY_CODE_LIST);
     let currencyCodes = [];
     try {
@@ -31,8 +31,8 @@ exports.convert = async (parameters) => {
     Please upgrade, or contact support@openexchangerates.org with any questions.
     */
 
-    console.log("getting currencies from openexchangerates.org");
-    let response = await fetch(`${URL_LATEST_EXCHANGE_RATES}?app_id=${APP_ID}0&symbols=${parameters.sourceCurrency},${parameters.destinationCurrency}`);
+    console.log("Getting current exchange rates from openexchangerates.org");
+    let response = await fetch(`${URL_LATEST_EXCHANGE_RATES}?app_id=${APP_ID}&symbols=${parameters.sourceCurrency},${parameters.destinationCurrency}`);
     try {
         responseDecoded = await response.json();
         if (responseDecoded.error !== undefined) {

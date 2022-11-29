@@ -17,7 +17,15 @@ app.post("/api/convert", async (req, res) => {
     console.log("serving", req.route.path, req.query);
     if (currencies.length === 0) {
         console.log("We need currency code list to validate the request but /api/currencyCodes was not called yet, getting now")
-        currencies = await calculator.getCurrencyCodeList();
+        let currenciesCodeList = await calculator.getCurrencyCodeList();
+        if (currenciesCodeList.error !== undefined) {
+            res.json({
+                error: 7654,
+                errorMessage: "Can't get list of currencies for request validation"
+            });
+            return;
+        }
+        currencies = currenciesCodeList.currencyCodes;
     }
     if (req.query.amount === undefined || req.query.src === undefined || req.query.dst === undefined
         || !currencies.includes(req.query.src) || !currencies.includes(req.query.dst)) {
@@ -45,13 +53,14 @@ app.get("/api/statistics", (req, res) => {
 
 app.get("/api/currencyCodes", async (req, res) => {
     console.log("serving", req.route.path);
-    currencies = await calculator.getCurrencyCodeList();
-    if (currencies.error !== undefined) {
+    let currencyCodeList = await calculator.getCurrencyCodeList();
+    if (currencyCodeList.error !== undefined) {
         console.error("Can't get currency code list.");
         res.json({ error: 8765 });
         return;
     }
-    res.json(currencies);
+    currencies = currencyCodeList.currencyCodes;
+    res.json(currencyCodeList);
 });
 
 app.listen(CONFIG.backend.serverPort, () => {
