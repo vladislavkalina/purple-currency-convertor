@@ -61,8 +61,8 @@ function loadValues() {
             data = JSON.parse(data);
             console.log("values loaded from storage", data);
             console.log("values gathered before loading from file, need to be added to those loaded from storage", statisticsData);
-            if (data.numberOfRequest !== undefined) statisticsData.numberOfRequest += parseInt(data.numberOfRequest);
-            if (data.totalAmountCoverted !== undefined) statisticsData.totalAmountCoverted += parseInt(data.totalAmountCoverted);
+            if (data.numberOfRequest !== undefined && parseFloat(data.numberOfRequest) > 0) statisticsData.numberOfRequest += parseFloat(data.numberOfRequest);
+            if (data.totalAmountCoverted !== undefined && parseFloat(data.totalAmountCoverted) > 0) statisticsData.totalAmountCoverted += parseFloat(data.totalAmountCoverted);
             Object.keys(data.popularDestCurrencies).forEach(key => {
                 if (statisticsData.popularDestCurrencies[key] === undefined) {
                     statisticsData.popularDestCurrencies[key] = data.popularDestCurrencies[key];
@@ -72,8 +72,6 @@ function loadValues() {
             });
         } catch (e) {
             console.log("Error during decoding statistics:", e);
-            statisticsReady = true;
-            return;
         }
         console.log("statistics loaded", statisticsData);
         statisticsReady = true;
@@ -82,5 +80,5 @@ function loadValues() {
     });
 }
 
-// loadValues();
-setTimeout(loadValues, 5000); //to simulate delay in reading file
+loadValues();
+// setTimeout(loadValues, 5000); //to simulate delay in reading file
