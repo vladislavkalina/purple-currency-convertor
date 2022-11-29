@@ -1,5 +1,5 @@
 // https://openexchangerates.org/account/app-ids
-const APP_ID = "0bdb980717af47498ce42dabbef3b4c7";
+var APP_ID = "";
 const URL_CURRENCY_CODE_LIST = "https://openexchangerates.org/api/currencies.json";
 const URL_LATEST_EXCHANGE_RATES = "https://openexchangerates.org/api/latest.json";
 const URL_USAGE = "https://openexchangerates.org/api/usage.json";
@@ -13,9 +13,10 @@ exports.getCurrencyCodeList = async () => {
         currencyCodes = Object.keys(parsedCurrencies);
         console.log("Received list of currencies", currencyCodes.length);
     } catch (e) {
-        console.info("Can't parse list of currencies", e);
+        console.error("Can't parse list of currencies", e);
+        return { error: 3456, errorMessage: "Can't get currency code list" };
     }
-    return currencyCodes;
+    return { currencyCodes: currencyCodes };
 }
 
 exports.convert = async (parameters) => {
@@ -31,28 +32,36 @@ exports.convert = async (parameters) => {
     */
 
     console.log("getting currencies from openexchangerates.org");
-    let response = await fetch(`${URL_LATEST_EXCHANGE_RATES}?app_id=${APP_ID}&symbols=${parameters.sourceCurrency},${parameters.destinationCurrency}`);
+    let response = await fetch(`${URL_LATEST_EXCHANGE_RATES}?app_id=${APP_ID}0&symbols=${parameters.sourceCurrency},${parameters.destinationCurrency}`);
     try {
         responseDecoded = await response.json();
-        // console.log(responseDecoded)
+        if (responseDecoded.error !== undefined) {
+            console.error("Exchange rates provider returner error", responseDecoded);
+            return { error: 1234, errorMessage: "Exchange rates provider returner error" };
+        }
 
-        let usdEquv = parameters.amount / responseDecoded.rates[parameters.sourceCurrency];
+        let usdEquvalent = parameters.amount / responseDecoded.rates[parameters.sourceCurrency];
         return {
-            destinationAmount: usdEquv * responseDecoded.rates[parameters.destinationCurrency],
-            usdEquivalent: usdEquv
+            destinationAmount: usdEquvalent * responseDecoded.rates[parameters.destinationCurrency],
+            usdEquivalent: usdEquvalent
         };
     } catch (e) {
         console.info("can't parse list of the latest exchange rates");
-        return { "errorMessage": "Statistics not ready yet" };
+        return { error: 2345, errorMessage: "Statistics not ready yet" };
     }
 }
 
-exports.logUsageInfo = async () => {
+exports.initialise = async (appId) => {
+    APP_ID = appId;
     let usageReponse = await fetch(`${URL_USAGE}?app_id=${APP_ID}`);
     try {
         usageReponseDecoded = await usageReponse.json();
-        console.log(usageReponseDecoded.data.usage);
+        if (usageReponseDecoded.status == 200) {
+            console.log("Usage info for provided API key", usageReponseDecoded.data.usage);
+        } else {
+            console.error("API key refused", usageReponseDecoded);
+        }
     } catch (e) {
-        console.info("Can't parse usage info", e);
+        console.error("Can't get usage info for this API key, the app will most likely not work.", e);
     }
 }

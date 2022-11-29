@@ -21,8 +21,8 @@ exports.updateStatistics = (parameters) => {
 
 exports.getStatistics = () => {
     if (statisticsReady === false) {
-        console.log("Reading from file not finished");
-        return { "errorMessage": "Statistics not ready yet" };
+        console.info("Reading from file not finished");
+        return { error: true, errorMessage: "Statistics not ready yet" };
     }
     let mostPopularCurrency = null;
     let mostPopularNumber = -1;

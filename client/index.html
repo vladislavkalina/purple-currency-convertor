@@ -12,9 +12,9 @@
         //TODO: In case the frontend remain as it is (plain HTLM+jQuery), the following code will go to a separate file, e.g. frontend.js
         function loadCurrencyCodeList() {
             $.get("/api/currencyCodes", (response) => {
-                if (response.currencyCodes === undefined || !Array.isArray(response.currencyCodes)) {
+                if (response.error !== undefined) {
                     console.log("loadCurrencyCodeList response", response);
-                    alert("We're sorry, our server didn't feel good while providing the list of currency codes).");
+                    alert(`We're sorry, our server didn't feel good while providing the list of currency codes. Please contact technical support. Code: ${response.error}`);
                     return;
                 };
                 $('#sourceCurrency').html('');
@@ -56,6 +56,11 @@
                 return;
             }
             $.post(`/api/convert?amount=${amount}&src=${srcCurrency}&dst=${destCurrency}`, (response) => {
+                if (response.error !== undefined) {
+                    console.error(response);
+                    alert(`Backend part of application doesn't work properly.\nPlease contact technical support. Code: ${response.error}`);
+                    return;
+                }
                 $('#results').append("<div>" + amount + " " + $('#sourceCurrency').val()
                     + " is " + response.destinationAmount + " " + $('#destinationCurrency').val() + "</div>");
                 renderStatistics(response.statistics);
