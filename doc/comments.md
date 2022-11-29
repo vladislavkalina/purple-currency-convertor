@@ -13,11 +13,17 @@ neporovnával.
 náš účel byla jako stvořená, ale není v bezplatné verzi, takže jsem si musel vystačit s obecnou
 /api/latest
 
-* Pro frontend jsem prozatím použil zatím pouze jQuery, o čemž si nejsem jistý, jestli splňuje
-větu ze zadání: _other __modern__ frameworks_. Můj původní záměr byl udělat rychle jednoduchou
-funkční kostru všech komponent, a poté postupně jednotlivé komponenty vylepšit, frontend jsem
-chtěl přepsat do Reactu. Ale backend mi zabral mnohem víc času, než jsem původně odhadoval, takže
-frontend prozatím nechávám jednoduchý, a případně ještě přepíšu v příštích dnech.
+* V balíčku jsou dva frontendy: nejdřív jsem v adresáři **client** udělal frontend s použitím jQuery,
+protože s touto knihovnou mám mnohem víc zkušeností než s Reactem, chtěl jsem mít rychle základní
+kostru celé aplikace, a (možná chybně) jsem předpokládal, že bez Reactu to bude rychlejší.
+
+Následně jsem v adresáři **client2** udělal druhý, tentokrát Reactový frontend. Celý tandem dvou
+Node.js (backend a reactový frontend) lze spustit jediným příkazem _npm start_ v hlavním adresáři
+projektu. React poslouchá na portu 3000, backend na portu 3001. Původní frontend je stále funkční
+na adrese http://localhost:3001/ Upřímně, nemám s takovým propojením a _proxováním_ dvou Node.JS
+žádné zkušenosti, takže netuším, nakolik je to "production ready". Pro případné produkční nasazení
+by samozřejmě bylo potřeba prohnat reactový frontend příkazem _npm run build_ a výsledný adresář
+**build** nechat servírovat backendovému Nodu, na což ten zatím není připraven.
 
 * Statistiky, ač na první pohled vypadaly jen jako "mimochodem", byly samozřejmě největší oříšek.
 Zvažoval jsem, jestli by server měl držet aktuální hodnoty, anebo hodnoty vždy načíst z uložiště
