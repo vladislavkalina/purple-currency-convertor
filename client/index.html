@@ -26,24 +26,23 @@
             });
         }
 
-        function loadStatistics() {
+        function loadStatistics(delayIfNoLuck = 100) {
             $.get("/api/statistics", (response) => {
-                renderStatistics(response)
+                renderStatistics(response, delayIfNoLuck)
             }).fail(function () {
                 alert("We're sorry, communication with our server failed (statistics).");
             });
         }
 
-        function renderStatistics(data) {
-            if (data.mostPopularCurrencies !== undefined) {
-                $('#mostPopularCurrency').html(data.mostPopularCurrencies);
+        function renderStatistics(data, delayIfNoLuck = 100) {
+            if (data.mostPopularCurrencies === undefined || data.totalAmountConverted === undefined || data.numberOfRequestsMade === undefined) {
+                console.log("statistics not valid, next try in", delayIfNoLuck, data);
+                setTimeout(() => { loadStatistics(2 * delayIfNoLuck) }, delayIfNoLuck);
+                return;
             }
-            if (data.totalAmountConverted !== undefined) {
-                $('#totalAmountConverted').html(data.totalAmountConverted);
-            }
-            if (data.numberOfRequestsMade !== undefined) {
-                $('#numberOfConversionRequests').html(data.numberOfRequestsMade);
-            }
+            $('#mostPopularCurrency').html(data.mostPopularCurrencies);
+            $('#totalAmountConverted').html(data.totalAmountConverted);
+            $('#numberOfConversionRequests').html(data.numberOfRequestsMade);
         }
 
         function convert() {
@@ -59,7 +58,8 @@
                 sourceCurrency: srcCurrency,
                 destinationCurrency: destCurrency
             }, (response) => {
-                $('#results').append("<div>" + amount + " " + $('#sourceCurrency').val() + " is " + response.destinationAmount + " " + $('#destinationCurrency').val() + "</div>");
+                $('#results').append("<div>" + amount + " " + $('#sourceCurrency').val()
+                    + " is " + response.destinationAmount + " " + $('#destinationCurrency').val() + "</div>");
                 renderStatistics(response.statistics);
             }).fail(function () {
                 alert("We're sorry, communication with our server failed (convert).");
@@ -73,11 +73,11 @@
 
     <input id="sourceAmount" type="number" valueAsNumber value="0">
     <select id="sourceCurrency">
-        <option>loading...</option>
+        <option>[loading...]</option>
     </select>
     to
     <select id="destinationCurrency">
-        <option>loading...</option>
+        <option>[loading...]</option>
     </select>
     <button onclick="convert()">Convert!</button>
 
@@ -87,9 +87,9 @@
 
     <div id="statistics">
         <h2>Statistics:</h2>
-        Most popular destination currency: <span id="mostPopularCurrency">loading...</span><br>
-        Total amount converted: <span id="totalAmountConverted">loading...</span> USD<br>
-        Total number of conversion requests made: <span id="numberOfConversionRequests">loading...</span><br>
+        Most popular destination currency: <span id="mostPopularCurrency">[loading...]</span><br>
+        Total amount converted: <span id="totalAmountConverted">[loading...]</span> USD<br>
+        Total number of conversion requests made: <span id="numberOfConversionRequests">[loading...]</span><br>
     </div>
 </body>
 
