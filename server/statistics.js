@@ -52,7 +52,11 @@ function storeValues() {
 function loadValues() {
     fs.readFile(STORAGE_FILENAME, (err, data) => {
         if (err) {
-            console.error("We can't read statistics from the previous run, let's start with zeros.", err);
+            if (err.code === "ENOENT") {
+                console.log("Storage file doesn't exist. That's expected behaviour for the 1st run. We'll start with zeros.");
+            } else {
+                console.error("Something else went wrong during reading the file.", err);
+            }
             statisticsReady = true;
             return;
         }
