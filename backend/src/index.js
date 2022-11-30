@@ -43,7 +43,9 @@ app.post("/api/convert", async (req, res) => {
         return;
     }
     statistics.updateStatistics({ amount: result.usdEquivalent, destinationCurrency: req.query.dst })
-    res.json({ destinationAmount: result.destinationAmount, statistics: statistics.getStatistics() });
+    let statData = statistics.getStatistics();
+    if (statData.error !== undefined) statData = {};
+    res.json({ destinationAmount: result.destinationAmount, statistics: statData });
 });
 
 app.get("/api/statistics", (req, res) => {

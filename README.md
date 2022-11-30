@@ -60,6 +60,8 @@ Beside the amount in converted in the desired destination currency (`destination
 
 Method: **POST**
 
+API may return error if input parameters are not passed correctly or the backend server has difficulties communicating to the external exchange rates provider. Statistics element may be empty when statistics are not read on the server. Than can happen shortly after backend start when the persistent storage is very slow.
+
 ### `/api/currencyCodes`
 
 This endpoint doesn't expect any input parameter. Example request:
@@ -73,6 +75,8 @@ Example response:
 >}
 
 Method: **GET**
+
+API may return error when the external exchange rates provider is not accessible for the backend server.
 
 ### `/api/statistics`
 
@@ -89,3 +93,5 @@ Example response:
 >}
 
 Method: **GET**
+
+API may return error when statistics are not ready on the server. It will happen especially shortly after start when the persistent storage is very slow.
