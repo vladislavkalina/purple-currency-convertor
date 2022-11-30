@@ -71,15 +71,37 @@
     </script>
     <style>
         /*TODO: In case the frontend remain as it is (plain HTLM+jQuery), the following code will go to a separate file, e.g. frontend.js*/
+        body {
+            font-family: Verdana, Arial, sans-serif;
+            background-color: rgb(47%, 18%, 62%);
+            background: linear-gradient(180deg, rgb(47%, 18%, 62%), rgb(32%, 14%, 45%));
+            color: white;
+            font-size: 11pt;
+            background-attachment: fixed;
+        }
+
+        input {
+            font-size: 14pt;
+            width: 120px;
+        }
+
+        select {
+            font-size: 14pt;
+        }
+
+        button {
+            font-size: 14pt;
+        }
+
         span.statItem {
             display: inline-block;
-            width: 300px
+            width: 350px
         }
     </style>
 </head>
 
 <body>
-    <h1>Currency convertor</h1>
+    <h1>Purple Currency Convertor</h1>
 
     <input id="sourceAmount" type="number" valueAsNumber value="0">
     <select id="sourceCurrency">

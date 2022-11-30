@@ -83,7 +83,7 @@ function App() {
 
     return (
         <div className="App">
-            <h1>Currency convertor</h1>
+            <h1>Purple Currency Convertor</h1>
 
             <input id={"amount"} type={"number"} defaultValue={0} />
 
@@ -92,7 +92,7 @@ function App() {
                     return <option key={"src" + code}>{code}</option>
                 })}
             </select>
-            to
+            &nbsp;to&nbsp;
             <select key="dstCurrency" id="dstCurrency">
                 {currencyCodes.map(code => {
                     return <option key={"dst" + code}>{code}</option>
