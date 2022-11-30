@@ -1,15 +1,15 @@
 const express = require("express");
 const path = require("path");
-const statistics = require("./statistics");
+const statistics = require("./statistics.js");
 const calculator = require("./openexchangeratesClient.js");
-const CONFIG = require("./config.json");
+const CONFIG = require("../config.json");
 
 const app = express();
 calculator.initialise(CONFIG.backend.openexchangeratesAppId);
 
 app.get("/", (req, res) => {
     console.log("serving", req.route.path);
-    res.sendFile(path.join(__dirname, '../client-jQuery/index.html'));
+    res.sendFile(path.join(__dirname, '../../client-jQuery/index.html'));
 });
 
 var currencies = [];

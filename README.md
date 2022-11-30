@@ -6,7 +6,7 @@ Project consists from three components: backend and two alternatives of frontend
 
 After you clone this repository, first step that you will have to do is installing node modules.
 
-### `npm install`
+### `cd backend; npm install`
 
 This will download and install Node modules for the backend component (about 3 MB).
 
@@ -25,6 +25,12 @@ This will start Node.JS with the backend component (listening on localhost port 
 Backend port can be configred in `backend/config.json` if needed.
 
 You will also need to register at https://openexchangerates.org and get your own API key. Once you have it, please put it to `backend/config.json`.
+
+Alternatively you can start backend and React frontend separately with commands
+
+`cd backend; npm start`
+and
+`cd client-React; npm start`
 
 ## Backend API for creating your own frontend
 
