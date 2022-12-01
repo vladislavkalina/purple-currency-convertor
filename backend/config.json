@@ -1,6 +1,6 @@
 {
     "backend": {
         "serverPort": 3001,
-        "openexchangeratesAppId": "0bdb980717af47498ce42dabbef3b4c7"
+        "openexchangeratesAppId": "HERE_PUT_YOUR_OWN_APP_ID"
     }
 }
