@@ -8,11 +8,6 @@ const app = express();
 calculator.initialise(CONFIG.backend.openexchangeratesAppId);
 statistics.initialise();
 
-app.get("/", (req, res) => {
-    console.log("serving", req.route.path);
-    res.sendFile(path.join(__dirname, '../../client-jQuery/index.html'));
-});
-
 var currencies = [];
 app.post("/api/convert", async (req, res) => {
     console.log("serving", req.route.path, req.query);

@@ -10,13 +10,13 @@ After you clone this repository, first step that you will have to do is installi
 
 This will download and install Node modules for the backend component (about 3 MB).
 
-### `cd client-React; npm install`
+### `cd frontend; npm install`
 
 This command will download and install Node modules for the React-based frontend component (about 400 MB).
 
 ## Starting the project
 
-All components can be started with a single command 
+Both frontend and backend can be started with a single command executed in the project root folder:
 
 ### `npm start`
 
@@ -26,11 +26,11 @@ Backend port can be configred in `backend/config.json` if needed.
 
 You will also need to register at https://openexchangerates.org and get your own API key. Once you have it, please put it to `backend/config.json`.
 
-Alternatively you can start backend and React frontend separately with commands
+Alternatively you can start backend and frontend separately with commands
 
 `cd backend; npm start`
 and
-`cd client-React; npm start`
+`cd frontend; npm start`
 
 ## Backend API for creating your own frontend
 
