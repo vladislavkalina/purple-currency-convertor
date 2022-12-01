@@ -7,6 +7,7 @@ function App() {
     const [mostPopularCurrency, setMostPopularCurrency] = React.useState("[Loading...]");
     const [totalAmountConverted, setTotalAmountConverted] = React.useState("[Loading...]");
     const [numberOfConversionRequests, setNumberOfConversionRequests] = React.useState("[Loading...]");
+    const [requestsRemaining, setRequestsRemaining] = React.useState("unknown");
 
     const [conversionResults, setConversionResults] = React.useState([]);
 
@@ -39,7 +40,7 @@ function App() {
             try {
                 const decodedResp = await resp.json();
                 if (decodedResp.error !== undefined) {
-                    alert(`We're sorry, our server didn't feel good while providing the list of currency codes. Please contact technical support. Code: ${decodedResp.error}`);
+                    console.error("Backend didn't provide statistics", decodedResp);
                     return;
                 }
                 // console.log(decodedResp)
@@ -47,7 +48,7 @@ function App() {
                 setTotalAmountConverted(decodedResp.totalAmountConverted);
                 setNumberOfConversionRequests(decodedResp.numberOfRequestsMade);
             } catch (e) {
-                alert(`We're sorry, our server didn't feel good while providing the list of currency codes. Please contact technical support (currency codes).`);
+                console.error("Backend didn't provide statistics:", e);
                 return;
             }
         }
@@ -79,9 +80,10 @@ function App() {
                 alert(`We are sorry but an error occured in communication with our server.\nPlease contact technical support.\nCode: ${responseDecoded.error}`);
             }
             setConversionResults(conversionResults.concat(`${amount} ${srcCurrency} is ${responseDecoded.destinationAmount} ${dstCurrency}`));
-            setMostPopularCurrency(responseDecoded.statistics.mostPopularCurrencies);
-            setTotalAmountConverted(responseDecoded.statistics.totalAmountConverted);
-            setNumberOfConversionRequests(responseDecoded.statistics.numberOfRequestsMade);
+            setMostPopularCurrency(responseDecoded.statistics.mostPopularCurrencies || "unknown");
+            setTotalAmountConverted(responseDecoded.statistics.totalAmountConverted || "unknown");
+            setNumberOfConversionRequests(responseDecoded.statistics.numberOfRequestsMade || "unknown");
+            setRequestsRemaining(responseDecoded.statistics.requestsRemaining || "unknown");
         } catch (e) {
             console.error("Error", e);
             alert("We are sorry but an error occured in decoding a response from our server.\nPlease contact technical support.\nCode: 2345");
@@ -135,6 +137,10 @@ function App() {
                         <div>
                             <span className={"statItem"}>Total number of conversion requests made:</span>
                             <span>{numberOfConversionRequests}</span>
+                        </div>
+                        <div>
+                            <span className={"statItem"}>Number of remaining conversions:</span>
+                            <span>{requestsRemaining}</span>
                         </div>
                     </div >
                 </>

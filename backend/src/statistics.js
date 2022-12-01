@@ -49,7 +49,7 @@ function storeValues() {
     });
 }
 
-function loadValues() {
+exports.initialise = () => {
     fs.readFile(STORAGE_FILENAME, (err, data) => {
         if (err) {
             if (err.code === "ENOENT") {
@@ -82,6 +82,3 @@ function loadValues() {
 
     });
 }
-
-loadValues();
-// setTimeout(loadValues, 5000); //to simulate delay in reading file

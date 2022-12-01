@@ -1,5 +1,6 @@
 // https://openexchangerates.org/account/app-ids
 var APP_ID = "";
+var requestsRemaining = 0;
 const URL_CURRENCY_CODE_LIST = "https://openexchangerates.org/api/currencies.json";
 const URL_LATEST_EXCHANGE_RATES = "https://openexchangerates.org/api/latest.json";
 const URL_USAGE = "https://openexchangerates.org/api/usage.json";
@@ -33,6 +34,7 @@ exports.convert = async (parameters) => {
 
     console.log("Getting current exchange rates from openexchangerates.org");
     let response = await fetch(`${URL_LATEST_EXCHANGE_RATES}?app_id=${APP_ID}&symbols=${parameters.sourceCurrency},${parameters.destinationCurrency}`);
+    --requestsRemaining;
     try {
         responseDecoded = await response.json();
         if (responseDecoded.error !== undefined) {
@@ -43,6 +45,7 @@ exports.convert = async (parameters) => {
         let usdEquvalent = parameters.amount / responseDecoded.rates[parameters.sourceCurrency];
         return {
             destinationAmount: usdEquvalent * responseDecoded.rates[parameters.destinationCurrency],
+            requestsRemaining: requestsRemaining,
             usdEquivalent: usdEquvalent
         };
     } catch (e) {
@@ -58,6 +61,7 @@ exports.initialise = async (appId) => {
         usageReponseDecoded = await usageReponse.json();
         if (usageReponseDecoded.status == 200) {
             console.log("Usage info for provided API key", usageReponseDecoded.data.usage);
+            requestsRemaining += usageReponseDecoded.data.usage.requests_remaining;
         } else {
             console.error("API key refused", usageReponseDecoded);
         }

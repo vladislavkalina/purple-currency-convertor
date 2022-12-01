@@ -6,6 +6,7 @@ const CONFIG = require("../config.json");
 
 const app = express();
 calculator.initialise(CONFIG.backend.openexchangeratesAppId);
+statistics.initialise();
 
 app.get("/", (req, res) => {
     console.log("serving", req.route.path);
@@ -45,6 +46,7 @@ app.post("/api/convert", async (req, res) => {
     statistics.updateStatistics({ amount: result.usdEquivalent, destinationCurrency: req.query.dst })
     let statData = statistics.getStatistics();
     if (statData.error !== undefined) statData = {};
+    if (result.requestsRemaining >= 0) statData.requestsRemaining = result.requestsRemaining;
     res.json({ destinationAmount: result.destinationAmount, statistics: statData });
 });
 
