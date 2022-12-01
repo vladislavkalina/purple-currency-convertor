@@ -10,6 +10,10 @@ function App() {
 
     const [conversionResults, setConversionResults] = React.useState([]);
 
+    const SOURCE_AMOUNT = "SRC_AMOUNT";
+    const SOURCE_CURRENCY = "SRC_CURRENCY";
+    const DESTINATION_CURRENCY = "DST_CURRENCY";
+
     useEffect(() => {
         const fetchCurrencyCodes = async () => {
             const resp = await fetch("/api/currencyCodes");
@@ -60,6 +64,9 @@ function App() {
             return;
         }
         try {
+            localStorage.setItem(SOURCE_AMOUNT, amount);
+            localStorage.setItem(SOURCE_CURRENCY, srcCurrency);
+            localStorage.setItem(DESTINATION_CURRENCY, dstCurrency);
             const response = await fetch(`/api/convert?amount=${amount}&src=${srcCurrency}&dst=${dstCurrency}`, { method: 'POST' });
             if (!response.ok) {
                 console.error(`Error on conversion request: ${response.status}`);
@@ -81,47 +88,57 @@ function App() {
         }
     }
 
+    let defaultAmount = localStorage.getItem(SOURCE_AMOUNT) || 1;
+    let defaultSourceCurrency = localStorage.getItem(SOURCE_CURRENCY);
+    let defaultDestinationCurrency = localStorage.getItem(DESTINATION_CURRENCY);
+
     return (
         <div className="App">
             <h1>Purple Currency Convertor</h1>
+            {currencyCodes.length <= 1 ?
+                <div>Loading...</div>
+                :
+                <>
 
-            <input id={"amount"} type={"number"} defaultValue={0} />
+                    <input id={"amount"} type={"number"} defaultValue={defaultAmount} />
 
-            <select key="srcCurrency" id="srcCurrency">
-                {currencyCodes.map(code => {
-                    return <option key={"src" + code}>{code}</option>
-                })}
-            </select>
-            &nbsp;to&nbsp;
-            <select key="dstCurrency" id="dstCurrency">
-                {currencyCodes.map(code => {
-                    return <option key={"dst" + code}>{code}</option>
-                })}
-            </select>
-            <button onClick={handleConvertClick}>Convert!</button>
+                    <select key="srcCurrency" id="srcCurrency" defaultValue={defaultSourceCurrency}>
+                        {currencyCodes.map(code => {
+                            return <option key={"src" + code}>{code}</option>
+                        })}
+                    </select>
+                    &nbsp;to&nbsp;
+                    <select key="dstCurrency" id="dstCurrency" defaultValue={defaultDestinationCurrency}>
+                        {currencyCodes.map(code => {
+                            return <option key={"dst" + code}>{code}</option>
+                        })}
+                    </select>
+                    <button onClick={handleConvertClick}>Convert!</button>
 
-            <div>
-                <h2>Results:</h2>
-                {conversionResults.map((item, index) => {
-                    return <div key={"result" + index}>{item}</div>
-                })}
-            </div>
+                    <div>
+                        <h2>Results:</h2>
+                        {conversionResults.map((item, index) => {
+                            return <div key={"result" + index}>{item}</div>
+                        })}
+                    </div>
 
-            <div>
-                <h2>Statistics:</h2>
-                <div>
-                    <span className={"statItem"}>Most popular destination currency:</span>
-                    <span>{mostPopularCurrency}</span>
-                </div>
-                <div>
-                    <span className={"statItem"}>Total amount converted:</span>
-                    <span>{totalAmountConverted}</span> USD
-                </div>
-                <div>
-                    <span className={"statItem"}>Total number of conversion requests made:</span>
-                    <span>{numberOfConversionRequests}</span>
-                </div>
-            </div >
+                    <div>
+                        <h2>Statistics:</h2>
+                        <div>
+                            <span className={"statItem"}>Most popular destination currency:</span>
+                            <span>{mostPopularCurrency}</span>
+                        </div>
+                        <div>
+                            <span className={"statItem"}>Total amount converted:</span>
+                            <span>{totalAmountConverted}</span> USD
+                        </div>
+                        <div>
+                            <span className={"statItem"}>Total number of conversion requests made:</span>
+                            <span>{numberOfConversionRequests}</span>
+                        </div>
+                    </div >
+                </>
+            }
         </div >
     );
 }
