@@ -1,11 +1,11 @@
 const express = require("express");
 const path = require("path");
 const statistics = require("./statistics.js");
-const calculator = require("./openexchangeratesClient.js");
+OpenexchangeratesClient = require("./openexchangeratesClient.js");
 const CONFIG = require("../config.json");
 
 const app = express();
-calculator.initialise(CONFIG.backend.openexchangeratesAppId);
+calculator = new OpenexchangeratesClient(CONFIG.backend.openexchangeratesAppId);
 statistics.initialise();
 
 var currencies = [];
