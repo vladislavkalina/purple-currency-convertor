@@ -29,16 +29,15 @@ module.exports = class {
     async getCurrencyCodeList() {
         console.log("Getting currency code list from openexchangerates.org");
         let currenciesReponse = await fetch(URL_CURRENCY_CODE_LIST);
-        let currencyCodes = [];
         try {
             let parsedCurrencies = await currenciesReponse.json();
-            currencyCodes = Object.keys(parsedCurrencies);
+            let currencyCodes = Object.keys(parsedCurrencies);
             console.log("Received list of currencies", currencyCodes.length);
+            return { currencyCodes: currencyCodes };
         } catch (e) {
             console.error("Can't parse list of currencies", e);
             return { error: 3456, errorMessage: "Can't get currency code list" };
         }
-        return { currencyCodes: currencyCodes };
     }
 
     async convert(parameters) {
