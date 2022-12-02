@@ -1,6 +1,7 @@
 {
     "backend": {
         "serverPort": 3001,
-        "openexchangeratesAppId": "HERE_PUT_YOUR_OWN_APP_ID"
+        "openexchangeratesAppId": "HERE_PUT_YOUR_OWN_OPENEXCHANGERATES_APP_ID",
+        "fixerApiKey": "HERE_PUT_YOUR_OWN_FIXER_APP_KEY"
     }
 }

@@ -7,7 +7,11 @@ module.exports = class {
     constructor(appId) {
         console.log("Openexchangerates constructor");
         this.APP_ID = appId;
-        this.requestsRemaining = 0;
+        this.remainingQuota = {
+            requestsRemaining: 0,
+            requestsQuota: 0,
+            daysRemaining: 0 // TODO: limitRefreshesInDays reload periodically
+        }
         this.initialise();
     }
 
@@ -17,7 +21,9 @@ module.exports = class {
             let usageReponseDecoded = await usageReponse.json();
             if (usageReponseDecoded.status == 200) {
                 console.log("Usage info for provided API key", usageReponseDecoded.data.usage);
-                this.requestsRemaining += usageReponseDecoded.data.usage.requests_remaining;
+                this.remainingQuota.requestsRemaining += usageReponseDecoded.data.usage.requests_remaining;
+                this.remainingQuota.requestsQuota = usageReponseDecoded.data.usage.requests_quota;
+                this.remainingQuota.daysRemaining = usageReponseDecoded.data.usage.days_remaining;
             } else {
                 console.error("API key refused", usageReponseDecoded);
             }
@@ -54,7 +60,7 @@ module.exports = class {
 
         console.log("Getting current exchange rates from openexchangerates.org");
         let response = await fetch(`${URL_LATEST_EXCHANGE_RATES}?app_id=${this.APP_ID}&symbols=${parameters.sourceCurrency},${parameters.destinationCurrency}`);
-        --this.requestsRemaining;
+        --this.remainingQuota.requestsRemaining;
         try {
             let responseDecoded = await response.json();
             if (responseDecoded.error !== undefined) {
@@ -65,7 +71,7 @@ module.exports = class {
             let usdEquvalent = parameters.amount / responseDecoded.rates[parameters.sourceCurrency];
             return {
                 destinationAmount: usdEquvalent * responseDecoded.rates[parameters.destinationCurrency],
-                requestsRemaining: this.requestsRemaining,
+                remainingQuota: this.remainingQuota,
                 usdEquivalent: usdEquvalent
             };
         } catch (e) {

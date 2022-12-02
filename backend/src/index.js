@@ -1,11 +1,15 @@
 const express = require("express");
-const path = require("path");
 const statistics = require("./statistics.js");
 OpenexchangeratesClient = require("./openexchangeratesClient.js");
+FixerClient = require("./fixerClient.js");
+CurrencylayerClient = require("./currencylayerClient.js");
 const CONFIG = require("../config.json");
+var providers = [
+    { priority: 1, api: new OpenexchangeratesClient(CONFIG.backend.openexchangeratesAppId) },
+    { priority: 1, api: new FixerClient(CONFIG.backend.fixerApiKey) }
+];
 
 const app = express();
-calculator = new OpenexchangeratesClient(CONFIG.backend.openexchangeratesAppId);
 statistics.initialise();
 
 var currencies = [];
@@ -13,7 +17,7 @@ app.post("/api/convert", async (req, res) => {
     console.log("serving", req.route.path, req.query);
     if (currencies.length === 0) {
         console.log("We need currency code list to validate the request but /api/currencyCodes was not called yet, getting now")
-        let currenciesCodeList = await calculator.getCurrencyCodeList();
+        let currenciesCodeList = await providers[0].api.getCurrencyCodeList(); // TODO: same comment as at /api/currencyCodes
         if (currenciesCodeList.error !== undefined) {
             res.json({
                 error: 7654,
@@ -33,15 +37,28 @@ app.post("/api/convert", async (req, res) => {
         });
         return;
     }
-    const result = await calculator.convert({ amount: req.query.amount, sourceCurrency: req.query.src, destinationCurrency: req.query.dst });
+    let theHighestProviderPriorityIndex = 0;
+    providers.forEach((provider, index) => {
+        console.log("provider #", index, "has priority", provider.priority);
+        if (provider.priority > providers[theHighestProviderPriorityIndex].priority) {
+            theHighestProviderPriorityIndex = index;
+        }
+    });
+    const result = await providers[theHighestProviderPriorityIndex].api.convert({ amount: req.query.amount, sourceCurrency: req.query.src, destinationCurrency: req.query.dst });
     if (result.error !== undefined) {
         res.json(result);
         return;
     }
+    if (result.destinationAmount === undefined) {
+        return { error: 6543 };
+    }
+    let quotaPercentRemaining = result.remainingQuota.requestsRemaining / result.remainingQuota.requestsQuota;
+    let quotaPercentRemainingPerDay = quotaPercentRemaining / result.remainingQuota.daysRemaining;
+    console.log("remains", quotaPercentRemaining, " for ", result.remainingQuota.daysRemaining, "days which is ", quotaPercentRemainingPerDay, " per day");
+    providers[theHighestProviderPriorityIndex].priority = quotaPercentRemainingPerDay;
     statistics.updateStatistics({ amount: result.usdEquivalent, destinationCurrency: req.query.dst })
     let statData = statistics.getStatistics();
     if (statData.error !== undefined) statData = {};
-    if (result.requestsRemaining >= 0) statData.requestsRemaining = result.requestsRemaining;
     res.json({ destinationAmount: result.destinationAmount, statistics: statData });
 });
 
@@ -52,7 +69,8 @@ app.get("/api/statistics", (req, res) => {
 
 app.get("/api/currencyCodes", async (req, res) => {
     console.log("serving", req.route.path);
-    let currencyCodeList = await calculator.getCurrencyCodeList();
+    let currencyCodeList = await providers[0].api.getCurrencyCodeList();
+    // TODO: we should call all provides, probably, compare the results and use intersection(?)
     if (currencyCodeList.error !== undefined) {
         console.error("Can't get currency code list.");
         res.json({ error: 8765 });

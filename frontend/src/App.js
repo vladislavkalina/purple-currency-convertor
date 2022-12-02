@@ -7,7 +7,6 @@ function App() {
     const [mostPopularCurrency, setMostPopularCurrency] = React.useState("[Loading...]");
     const [totalAmountConverted, setTotalAmountConverted] = React.useState("[Loading...]");
     const [numberOfConversionRequests, setNumberOfConversionRequests] = React.useState("[Loading...]");
-    const [requestsRemaining, setRequestsRemaining] = React.useState("unknown");
 
     const [conversionResults, setConversionResults] = React.useState([]);
 
@@ -83,7 +82,6 @@ function App() {
             setMostPopularCurrency(responseDecoded.statistics.mostPopularCurrencies || "unknown");
             setTotalAmountConverted(responseDecoded.statistics.totalAmountConverted || "unknown");
             setNumberOfConversionRequests(responseDecoded.statistics.numberOfRequestsMade || "unknown");
-            setRequestsRemaining(responseDecoded.statistics.requestsRemaining || "unknown");
         } catch (e) {
             console.error("Error", e);
             alert("We are sorry but an error occured in decoding a response from our server.\nPlease contact technical support.\nCode: 2345");
@@ -137,10 +135,6 @@ function App() {
                         <div>
                             <span className={"statItem"}>Total number of conversion requests made:</span>
                             <span>{numberOfConversionRequests}</span>
-                        </div>
-                        <div>
-                            <span className={"statItem"}>Number of remaining conversions:</span>
-                            <span>{requestsRemaining}</span>
                         </div>
                     </div >
                 </>
