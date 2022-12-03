@@ -20,7 +20,7 @@ module.exports = class {
         try {
             let usageReponseDecoded = await usageReponse.json();
             if (usageReponseDecoded.status == 200) {
-                console.log("Usage info for provided API key", usageReponseDecoded.data.usage);
+                // console.log("Usage info for provided API key", usageReponseDecoded.data.usage);
                 this.remainingQuota.requestsRemaining += usageReponseDecoded.data.usage.requests_remaining;
                 this.remainingQuota.requestsQuota = usageReponseDecoded.data.usage.requests_quota;
                 this.remainingQuota.daysRemaining = usageReponseDecoded.data.usage.days_remaining;

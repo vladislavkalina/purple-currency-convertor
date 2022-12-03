@@ -5,9 +5,17 @@ Komentáře a problémy
 bylo zřejmě lepší se jí vyhnout. Ale já ji mám rád, ale věřím, že pro tento účel je stabilní
 dostatečně.
 
-* Ze tří nabídnutých zdrojů kurzovních lístků jsem vybral https://openexchangerates.org, protože
-v bezplatné licenci nabízí 1,000 requestů, ostatní dva zdroje nabízí jen 100. Další rozdíly jsem
-neporovnával.
+* Ze tří nabídnutých zdrojů kurzovních lístků jsem implementol zatim dva: https://fixer.io a
+https://openexchangerates.org. První z nich nabízí jen 100 requestů měsíčně, což je i pro testování
+poměrně málo, navíc napočítává i stažení seznamu kódů. Druhý jmenovaný nabízí 1000 requestů a
+stažení seznamu symbolů nezapočítává, proto pro tento účel používám pouze tento zdroj, přestože
+nabízí 170 kódů měn, zatímco Fixer předkládá jen 169. Ve skutečném světě bychom se s tímto faktem
+museli vypořádat, nejspíš stáhnout vždy oba seznamy a frontendu nabízet jen průnik obou množin.
+V tomto tréninkovém projektu jsem se tímto zádrhelem nezabýval.
+
+* Implementoval jsem jednoduchý load balancing mezi zdroji (podle procenta zbývajícího requestů
+s ohledem a zbývající délku období) a naznačil jsem, jak bychom v produkčním prostředí přidali
+zajitili failover v případě selhání jednoho ze zdrojů.
 
 * https://openexchangerates.org nabízí API metodu /api/convert/{value}/{from}/{to}, která by pro
 náš účel byla jako stvořená, ale není v bezplatné verzi, takže jsem si musel vystačit s obecnou
