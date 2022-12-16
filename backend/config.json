@@ -1,7 +1,10 @@
 {
     "backend": {
         "serverPort": 3001,
-        "openexchangeratesAppId": "HERE_PUT_YOUR_OWN_OPENEXCHANGERATES_APP_ID",
-        "fixerApiKey": "HERE_PUT_YOUR_OWN_FIXER_APP_KEY"
+        "apiKeys": {
+            "openexchangeratesAppIds": "put LIST of your own APP IDs here ['aaa', 'bbb']",
+            "fixerApiKeys": "put LIST of your own API KEYs here ['aaa', 'bbb']",
+            "currencylayerApiKeys": "put LIST of your own API KEYs here ['aaa', 'bbb']"
+        }
     }
 }

@@ -24,8 +24,8 @@ module.exports = class {
             return { currencyCodes: this.currencyCodes };
         }
         console.log("Getting currency code list from fixer.io");
-        let currenciesReponse = await fetch(URL_CURRENCY_CODE_LIST, { headers: { apikey: this.APP_ID } });
         try {
+            let currenciesReponse = await fetch(URL_CURRENCY_CODE_LIST, { headers: { apikey: this.APP_ID } });
             let parsedCurrencies = await currenciesReponse.json();
             this.currencyCodes = Object.keys(parsedCurrencies.symbols);
             console.log("Received list of currencies", this.currencyCodes.length);
@@ -38,11 +38,11 @@ module.exports = class {
 
     async convert(parameters) {
         // let url = `${URL_LATEST_EXCHANGE_RATES}&amount=${parameters.amount}&from=${parameters.sourceCurrency}&to=${parameters.destinationCurrency}`
-        let url = `${URL_LATEST_EXCHANGE_RATES}&base=${parameters.sourceCurrency}&symbols=USD,${parameters.destinationCurrency}`
-        console.log("Getting current exchange rates from fixer.org");
-        let response = await fetch(url, { headers: { apikey: this.APP_ID } });
-        console.log("got response");
         try {
+            let url = `${URL_LATEST_EXCHANGE_RATES}&base=${parameters.sourceCurrency}&symbols=USD,${parameters.destinationCurrency}`
+            console.log("Getting current exchange rates from fixer.org");
+            let response = await fetch(url, { headers: { apikey: this.APP_ID } });
+            console.log("got response");
             let responseDecoded = await response.json();
             console.log("decoded response");
             return {

@@ -16,8 +16,8 @@ module.exports = class {
     }
 
     async initialise() {
-        let usageReponse = await fetch(`${URL_USAGE}?app_id=${this.APP_ID}`);
         try {
+            let usageReponse = await fetch(`${URL_USAGE}?app_id=${this.APP_ID}`);
             let usageReponseDecoded = await usageReponse.json();
             if (usageReponseDecoded.status == 200) {
                 // console.log("Usage info for provided API key", usageReponseDecoded.data.usage);
@@ -34,8 +34,8 @@ module.exports = class {
 
     async getCurrencyCodeList() {
         console.log("Getting currency code list from openexchangerates.org");
-        let currenciesReponse = await fetch(URL_CURRENCY_CODE_LIST);
         try {
+            let currenciesReponse = await fetch(URL_CURRENCY_CODE_LIST);
             let parsedCurrencies = await currenciesReponse.json();
             let currencyCodes = Object.keys(parsedCurrencies);
             console.log("Received list of currencies", currencyCodes.length);
@@ -59,9 +59,9 @@ module.exports = class {
         */
 
         console.log("Getting current exchange rates from openexchangerates.org");
-        let response = await fetch(`${URL_LATEST_EXCHANGE_RATES}?app_id=${this.APP_ID}&symbols=${parameters.sourceCurrency},${parameters.destinationCurrency}`);
-        --this.remainingQuota.requestsRemaining;
         try {
+            let response = await fetch(`${URL_LATEST_EXCHANGE_RATES}?app_id=${this.APP_ID}&symbols=${parameters.sourceCurrency},${parameters.destinationCurrency}`);
+            --this.remainingQuota.requestsRemaining;
             let responseDecoded = await response.json();
             if (responseDecoded.error !== undefined) {
                 console.error("Exchange rates provider returner error", responseDecoded);

@@ -1,16 +1,8 @@
 const express = require("express");
 const statistics = require("./statistics.js");
-OpenexchangeratesClient = require("./openexchangeratesClient.js");
-FixerClient = require("./fixerClient.js");
-CurrencylayerClient = require("./currencylayerClient.js");
 const CONFIG = require("../config.json");
 const providerManager = require("./providerManager.js");
-providerManager.initialize([
-    new OpenexchangeratesClient(CONFIG.backend.openexchangeratesAppId),
-    new FixerClient(CONFIG.backend.fixerApiKey),
-    // TODO: new CurrencylayerClient(),
-    // TODO: multiple instances of the same provider may be added to loadbalance among several app keys
-]);
+providerManager.initialize(CONFIG.backend.apiKeys);
 
 const app = express();
 statistics.initialise();
